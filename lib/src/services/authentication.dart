@@ -6,6 +6,8 @@ import 'package:flutter_chat/src/model/auth_request.dart';
 class Authentication {
   final _auth = FirebaseAuth.instance;
 
+  get authRequest => null;
+
   Future<AuthenticationRequest> createUser(
       {String email = "", String password = ""}) async {
     AuthenticationRequest authRequest = AuthenticationRequest();
@@ -16,7 +18,7 @@ class Authentication {
         authRequest.success = true;
       }
     } catch (e) {
-      print(e);
+      _mapErrorMessage(authRequest, e.toString());
     }
     return authRequest;
   }
@@ -27,7 +29,7 @@ class Authentication {
         return await _auth.currentUser;
       }
     } catch (e) {
-      print(e.toString());
+      print(e);
     }
     return null;
   }
@@ -42,8 +44,27 @@ class Authentication {
         authRequest.success = true;
       }
     } catch (e) {
-      print(e.toString());
+      _mapErrorMessage(authRequest, e.toString());
     }
     return authRequest;
+  }
+
+  void _mapErrorMessage(AuthenticationRequest authRequest, String code) {
+    switch (code) {
+      case 'ERROR_USER_NOT_FOUND':
+        authRequest.errorMessage = "Usuario no encontrado";
+        break;
+      case 'ERROR_WRONG_PASSWORD':
+        authRequest.errorMessage = "Contraseña invalida";
+        break;
+      case 'ERROR_NETWORK_REQUEST_FAILED':
+        authRequest.errorMessage = "Error de red";
+        break;
+      case 'ERROR_EMAIL_ALREADY_IN_USE':
+        authRequest.errorMessage = "El usuario ya está registrado";
+        break;
+      default:
+        authRequest.errorMessage = code;
+    }
   }
 }

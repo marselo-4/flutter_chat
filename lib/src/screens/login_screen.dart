@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, unnecessary_null_comparison
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_chat/src/mixins/validation_mixins.dart';
@@ -14,20 +15,24 @@ class LoginScreen extends StatefulWidget {
   _LoginScreenState createState() => new _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends State<LoginScreen> with ValidationMixins {
   @override
   Widget build(BuildContext context) {
     TextEditingController _emailController = TextEditingController();
     TextEditingController _passwordController = TextEditingController();
     FocusNode? _focusnode;
     bool showSpinner = false;
+    bool _autoValidate = false;
     final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+    String errormsg = "";
 
+    @override
     void initState() {
       super.initState();
       _focusnode = FocusNode();
-      Future.delayed(Duration.zero, () {
-        FocusScope.of(context).requestFocus(_focusnode);
+      Firebase.initializeApp().whenComplete(() {
+        print("completed");
+        setState(() {});
       });
     }
 
@@ -50,6 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
         inputText: "Ingresar Email",
         onSaved: (value) {},
         validator: ValidationMixins().validateEmail,
+        autoValidate: _autoValidate,
       );
     }
 
@@ -60,6 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
         onSaved: (value) {},
         obscureText: true,
         validator: ValidationMixins().validatePassword,
+        autoValidate: _autoValidate,
       );
     }
 
@@ -70,17 +77,21 @@ class _LoginScreenState extends State<LoginScreen> {
           if (_formKey.currentState!.validate()) {
             setSpinnerStatus(true);
             // Lógica de inicio de sesión
-            var newUser = await Authentication().loginUser(
+            var auth = await Authentication().loginUser(
                 email: _emailController.text,
                 password: _passwordController.text);
-            if (newUser != null) {
+            if (auth.success == true) {
               Navigator.pushNamed(context, '/chat');
+              _emailController.clear();
+              _passwordController.clear();
+            } else {
+              print("No se ha podido iniciar sesión");
             }
-            FocusScope.of(context).requestFocus(_focusnode);
-            _emailController.clear();
-            _passwordController.clear();
             setSpinnerStatus(false);
+          } else {
+            _autoValidate = true;
           }
+          ;
         },
         texto: "Log In",
       );
@@ -118,6 +129,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       height: 24.0,
                     ),
                     _loginButton(),
+                    Text(
+                      errormsg,
+                      style: TextStyle(color: Colors.red, fontSize: 16.0),
+                    ),
                   ],
                 ),
               ),

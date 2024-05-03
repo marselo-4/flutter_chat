@@ -9,6 +9,7 @@ class AppTextField extends StatelessWidget {
   final TextEditingController? controller;
   final FocusNode? focusNode;
   final FormFieldValidator<String>? validator;
+  final bool autoValidate;
 
   AppTextField(
       {required this.inputText,
@@ -16,11 +17,14 @@ class AppTextField extends StatelessWidget {
       this.obscureText,
       this.controller,
       this.focusNode,
-      this.validator});
+      this.validator,
+      this.autoValidate = false});
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      autovalidateMode:
+          autoValidate ? AutovalidateMode.always : AutovalidateMode.disabled,
       focusNode: focusNode,
       controller: controller,
       decoration: InputDecoration(
