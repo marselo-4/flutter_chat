@@ -14,9 +14,9 @@ Este es un proyecto de aplicación multiplataforma desarrollado en Flutter que p
 
 
 <div style="display: flex, justify-content: space-around, align-items: center;">
-<img src="https://i.imgur.com/w6wERdr.png" style="width: 300px"/>
-<img src="https://i.imgur.com/yqdPkGt.png" style="width: 300px"/>
-<img src="https://i.imgur.com/BSxIgp8.png" style="width: 300px"/>
+<img src="https://i.imgur.com/w6wERdr.png" style="width: 250px"/>
+<img src="https://i.imgur.com/yqdPkGt.png" style="width: 250px"/>
+<img src="https://i.imgur.com/BSxIgp8.png" style="width: 250px"/>
 </div>
 
 
